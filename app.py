@@ -31,10 +31,12 @@ app = Flask(__name__)
 def home():
     list_to_routes = (f'<br><h2>Welcome to Hawaii Climate Analysis ….</h2>'
     f'<br>Here are the routes you can choose:'
-    f'<br>/api/v1.0/precipitation'
+    f'<br><a href="/api/v1.0/precipitation">Go to Precipitation Page</a>'
     f'<br>/api/v1.0/stations'
     f'<br>/api/v1.0/tobs'
-    # f'<br>/api/v1.0/<start> and /api/v1.0/<start>/<end>' 
+    f'<br>/api/v1.0/&lt;start&gt;'
+    f'<br>/api/v1.0/&lt;start&gt;/&lt;end&gt;'
+ 
     )
     return list_to_routes 
 
@@ -87,13 +89,35 @@ def tobs():
         tobs_results.append(tobs_dict)
     return jsonify(tobs_results)
 
-# # @app.route("/api/v1.0/<start> and /api/v1.0/<start>/<end>") # separate these routes
-# # def startend():
-#  # create session
-#     # session = Session(engine)
-    
-#     # session.close()
-# #     return
+@app.route("/api/v1.0/<start>")
+def start_date(start):
+ # create session
+    session = Session(engine)
+    sel_tobs_stats = [func.min(meas.tobs), func.avg(meas.tobs), func.max(meas.tobs)]
+    tobs_stat_query = session.query(*sel_tobs_stats).filter(meas.date >= start)
+    start_results_dict = {"Temp_Min" : tobs_stat_query[0][0], "Temp_Avg" : tobs_stat_query[0][1], "Temp_Max" : tobs_stat_query[0][2]}
+    session.close()
+    return jsonify(start_results_dict)
+
+@app.route("/api/v1.0/<start>/<end>")
+def start_end_date(start,end):
+ # create session
+    session = Session(engine)
+    sel_tobs_stats = [func.min(meas.tobs), func.avg(meas.tobs), func.max(meas.tobs)]
+    tobs_stat_query = session.query(*sel_tobs_stats).filter(meas.date >= start).filter(meas.date <= end)
+    results_dict = {"Temp_Min" : tobs_stat_query[0][0], "Temp_Avg" : tobs_stat_query[0][1], "Temp_Max" : tobs_stat_query[0][2]}
+    session.close()
+    return jsonify(results_dict)
+
+# @app.route("/api/v1.0/<start>/<end>")
+# def start_end_date(start, end):
+#     # create session
+#     session = Session(engine)
+#     sel_tobs_stats = [func.min(meas.tobs), func.avg(meas.tobs), func.max(meas.tobs)]
+#     tobs_stat_query = session.query(*sel_tobs_stats).filter(meas.date >= start)
+
+#     session.close()
+#     return
 
 # running app
 if __name__ == "__main__":
