@@ -57,8 +57,10 @@ def stations():
     results = session.query(stat.station)
     session.close()
     station_list = []
-    for entry in results:
-        station_list.append[entry[0]]
+    s = 0
+    for s in results:
+        current_station = results[s]
+        station_list.append(current_station)
     return jsonify(station_list)
 
 # @app.route("/api/v1.0/tobs")
