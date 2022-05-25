@@ -54,9 +54,12 @@ def precipitation():
 def stations():
     # create session
     session = Session(engine)
-
+    results = session.query(stat.station)
     session.close()
-    return
+    station_list = []
+    for entry in results:
+        station_list.append[entry[0]]
+    return jsonify(station_list)
 
 # @app.route("/api/v1.0/tobs")
 # def tobs():
