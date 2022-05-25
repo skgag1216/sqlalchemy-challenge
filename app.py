@@ -54,24 +54,25 @@ def precipitation():
 def stations():
     # create session
     session = Session(engine)
-    results = session.query(stat.station)
+    results = session.query(stat.station).all()
     session.close()
-    station_list = []
-    s=0
-    for current_station in results:
-        current_station = results[s]
-        station_list.append(current_station)
-        s += 1
-    station_dict = dict.fromkeys(station_list)
-    return (f'{station_dict}')
+    station_list = list(np.ravel(results))
+    # station_list = []
+    # s=0
+    # for current_station in results:
+    #     current_station = results[s]
+    #     station_list.append(current_station)
+    #     s += 1
+    # station_dict = dict.fromkeys(station_list)
+    return jsonify(station_list)
 
-# @app.route("/api/v1.0/tobs")
-# def tobs():
-#      # create session
-#     session = Session(engine)
-    
-#     session.close()
-#     return
+@app.route("/api/v1.0/tobs")
+def tobs():
+     # create session
+    session = Session(engine)
+    results = session.query(meas.tobs)
+    session.close()
+    return
 
 # # @app.route("/api/v1.0/<start> and /api/v1.0/<start>/<end>") # separate these routes
 # # def startend():
