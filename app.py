@@ -31,10 +31,12 @@ app = Flask(__name__)
 def home():
     list_to_routes = (f'<br><h2>Welcome to Hawaii Climate Analysis ….</h2>'
     f'<br>Here are the routes you can choose:'
-    f'<br><a href="/api/v1.0/precipitation">Go to Precipitation Page</a>'
-    f'<br>/api/v1.0/stations'
-    f'<br>/api/v1.0/tobs'
+    f'<br><a href="/api/v1.0/precipitation">Precipitation Page</a>'
+    f'<br><a href="/api/v1.0/stations">Stations Page</a>'
+    f'<br><a href="/api/v1.0/tobs">TOBS Page</a>'
+    f'<br>For Start Date Page enter start date at end of web address as YYYY-M-D'
     f'<br>/api/v1.0/&lt;start&gt;'
+    f'<br>For Start & End Date Page enter start date then a / and end date at the end of the web address as YYYY-M-D'
     f'<br>/api/v1.0/&lt;start&gt;/&lt;end&gt;'
  
     )
