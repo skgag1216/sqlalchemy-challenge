@@ -57,22 +57,35 @@ def stations():
     results = session.query(stat.station).all()
     session.close()
     station_list = list(np.ravel(results))
-    # station_list = []
-    # s=0
-    # for current_station in results:
-    #     current_station = results[s]
-    #     station_list.append(current_station)
-    #     s += 1
-    # station_dict = dict.fromkeys(station_list)
     return jsonify(station_list)
 
 @app.route("/api/v1.0/tobs")
 def tobs():
      # create session
     session = Session(engine)
-    results = session.query(meas.tobs)
+
+    # Starting from the most recent data point in the database. 
+    recent_date = session.query(meas.date).order_by(meas.date.desc()).first() 
+    # put recent_date into date format
+    last_date = dt.datetime.strptime(recent_date.date, '%Y-%m-%d').date()
+    # Calculate the date one year from the last date in data set.
+    year_ago = last_date - dt.timedelta(days=365)
+    #retrieve most active station
+    station_list = [meas.station, func.count(meas.station)] 
+    most_active_station = session.query(*station_list).group_by(meas.station).order_by(func.count(meas.station).desc())\
+                        .first().station
+    sel = [meas.date, meas.tobs]
+    results = session.query(*sel).filter(meas.date > year_ago).filter(meas.station==most_active_station).all()
+    print(results)
     session.close()
-    return
+
+    tobs_results = []
+    for date, tobs in results:
+        tobs_dict = {}
+        tobs_dict["date"] = date
+        tobs_dict["tobs"] = tobs
+        tobs_results.append(tobs_dict)
+    return jsonify(tobs_results)
 
 # # @app.route("/api/v1.0/<start> and /api/v1.0/<start>/<end>") # separate these routes
 # # def startend():
