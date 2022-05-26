@@ -7,7 +7,6 @@ from sqlalchemy import create_engine, func
 import datetime as dt
 import pandas as pd
 
-
 from flask import Flask, jsonify
 
 # database setup to pull the data
@@ -29,16 +28,15 @@ app = Flask(__name__)
 #Flask routes
 @app.route("/")
 def home():
-    list_to_routes = (f'<br><h2>Welcome to Hawaii Climate Analysis ….</h2>'
+    list_to_routes = (f'<br><h2>Welcome to Hawaii Climate Analysis!</h2>'
     f'<br>Here are the routes you can choose:'
     f'<br><a href="/api/v1.0/precipitation">Precipitation Page</a>'
     f'<br><a href="/api/v1.0/stations">Stations Page</a>'
     f'<br><a href="/api/v1.0/tobs">TOBS Page</a>'
     f'<br>For Start Date Page enter start date at end of web address as YYYY-M-D'
     f'<br>/api/v1.0/&lt;start&gt;'
-    f'<br>For Start & End Date Page enter start date then a / and end date at the end of the web address as YYYY-M-D'
+    f'<br>For Start & End Date Page enter a start date, then / and an end date at the end of the web address as YYYY-M-D'
     f'<br>/api/v1.0/&lt;start&gt;/&lt;end&gt;'
- 
     )
     return list_to_routes 
 
@@ -110,16 +108,6 @@ def start_end_date(start,end):
     results_dict = {"Temp_Min" : tobs_stat_query[0][0], "Temp_Avg" : tobs_stat_query[0][1], "Temp_Max" : tobs_stat_query[0][2]}
     session.close()
     return jsonify(results_dict)
-
-# @app.route("/api/v1.0/<start>/<end>")
-# def start_end_date(start, end):
-#     # create session
-#     session = Session(engine)
-#     sel_tobs_stats = [func.min(meas.tobs), func.avg(meas.tobs), func.max(meas.tobs)]
-#     tobs_stat_query = session.query(*sel_tobs_stats).filter(meas.date >= start)
-
-#     session.close()
-#     return
 
 # running app
 if __name__ == "__main__":
